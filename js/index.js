@@ -8,9 +8,9 @@ const refs = {
   image: document.querySelector('.lightbox__image'),
   overlay: document.querySelector('.lightbox__overlay'),
 };
-
+let currentShowImgindex = null;
 // получаем базовую разметку
-const galleryList = items.map(item => {
+const galleryList = items.map((item, index) => {
   const itemEl = document.createElement('li');
   const imageEl = document.createElement('img');
   const linkEl = document.createElement('a');
@@ -21,11 +21,13 @@ const galleryList = items.map(item => {
 
   imageEl.src = item.preview;
   imageEl.dataset.original = item.original;
+  imageEl.dataset.index = index;
 
   linkEl.append(imageEl);
   itemEl.append(linkEl);
-  refs.gallery.append(itemEl);
+  return linkEl;
 });
+refs.gallery.append(...galleryList);
 // console.log(refs.modal);
 
 refs.gallery.addEventListener('click', showOriginalImg);
@@ -36,8 +38,9 @@ refs.buttonClose.addEventListener('click', closeModal);
 
 function showOriginalImg(evt) {
   if (evt.target !== evt.currentTarget) {
-    const { original } = evt.target.dataset;
-    openModal(original);
+    const url = evt.target.dataset.original;
+    currentShowImgindex = +evt.target.dataset.index;
+    openModal(url);
   }
 }
 function openModal(src) {
@@ -58,8 +61,22 @@ function closeModal() {
 // функция закрытия по ESC
 function keydownESC(evt) {
   console.log(evt);
+
   if (evt.code === 'Escape') {
     closeModal();
+  }
+  if (evt.code === 'ArrowRight') {
+    // console.log(items[1]);
+    // console.log('нажал вправо');
+    currentShowImgindex = currentShowImgindex + 1;
+    refs.image.src = items[currentShowImgindex].original;
+
+    // refs.image.src = refs.image.nextSibling;
+  }
+  if (evt.code === 'ArrowLeft') {
+    // console.log('нажал влево');
+    currentShowImgindex = currentShowImgindex - 1;
+    refs.image.src = items[currentShowImgindex].original;
   }
 }
 //закрытие кликом по оверлэй
