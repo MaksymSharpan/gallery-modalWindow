@@ -19,35 +19,40 @@ const galleryList = items.map(item => {
   imageEl.classList.add('gallery__image');
   linkEl.classList.add('gallery__link');
 
-  imageEl.src = item.preview; // маленькое изображение
+  imageEl.src = item.preview;
+  imageEl.dataset.original = item.original;
 
-  itemEl.append(imageEl);
+  linkEl.append(imageEl);
+  itemEl.append(linkEl);
   refs.gallery.append(itemEl);
 });
-
-// открытие молального окна
 // console.log(refs.modal);
 
-refs.gallery.addEventListener('click', openModal);
+refs.gallery.addEventListener('click', showOriginalImg);
 refs.buttonClose.addEventListener('click', closeModal);
 
-function openModal(evt) {
+//-----------------------------------------------------------------------
+// открытие модального окна
+
+function showOriginalImg(evt) {
   if (evt.target !== evt.currentTarget) {
-    refs.modal.classList.add('is-open');
-    // console.log(evt.target.src);
-    // items.map((item, index) => {
-    //   console.log(index);
-    //   refs.image.src = item.original;
-    // });
+    const { original } = evt.target.dataset;
+    openModal(original);
   }
+}
+function openModal(src) {
+  refs.modal.classList.add('is-open');
+  refs.image.src = src;
   // закрытие по ESС (прослушивается только если модалка открыта)
   document.addEventListener('keydown', keydownESC);
 }
-
+//-----------------------------------------------------------------------
+//
 //закрытие модального окна по button
 function closeModal() {
   refs.modal.classList.remove('is-open');
   document.removeEventListener('keydown', keydownESC);
+  refs.image.src = '';
 }
 
 // функция закрытия по ESC
@@ -57,6 +62,5 @@ function keydownESC(evt) {
     closeModal();
   }
 }
-
 //закрытие кликом по оверлэй
 refs.overlay.addEventListener('click', closeModal);
