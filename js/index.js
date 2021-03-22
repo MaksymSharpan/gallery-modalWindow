@@ -8,9 +8,10 @@ const refs = {
   image: document.querySelector('.lightbox__image'),
   overlay: document.querySelector('.lightbox__overlay'),
 };
-let currentShowImgindex = null;
+let currentShowImgindex = null; //------------------------------<<< переменная, которая хранит значие открытого элемента
 // получаем базовую разметку
 const galleryList = items.map((item, index) => {
+  // <<<-------------<<< индекс получил с помощью map
   const itemEl = document.createElement('li');
   const imageEl = document.createElement('img');
   const linkEl = document.createElement('a');
@@ -21,7 +22,7 @@ const galleryList = items.map((item, index) => {
 
   imageEl.src = item.preview;
   imageEl.dataset.original = item.original;
-  imageEl.dataset.index = index;
+  imageEl.dataset.index = index; // <<<<------------------------------ добавил атрибут, который будет хранить индекс элемента
 
   linkEl.append(imageEl);
   itemEl.append(linkEl);
@@ -39,13 +40,13 @@ refs.buttonClose.addEventListener('click', closeModal);
 function showOriginalImg(evt) {
   if (evt.target !== evt.currentTarget) {
     const url = evt.target.dataset.original;
-    currentShowImgindex = +evt.target.dataset.index;
+    currentShowImgindex = +evt.target.dataset.index; // <<<------------------------------------<<< при открытии модалки переменная перезаписывается
     openModal(url);
   }
 }
-function openModal(src) {
+function openModal(url) {
   refs.modal.classList.add('is-open');
-  refs.image.src = src;
+  refs.image.src = url;
   // закрытие по ESС (прослушивается только если модалка открыта)
   document.addEventListener('keydown', keydownESC);
 }
@@ -70,8 +71,6 @@ function keydownESC(evt) {
     // console.log('нажал вправо');
     currentShowImgindex = currentShowImgindex + 1;
     refs.image.src = items[currentShowImgindex].original;
-
-    // refs.image.src = refs.image.nextSibling;
   }
   if (evt.code === 'ArrowLeft') {
     // console.log('нажал влево');
